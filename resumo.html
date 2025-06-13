@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resumo - Controle de Vendas</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/dashboard.css">
+    <link rel="stylesheet" href="styles/resumo.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <i class="fas fa-store"></i>
+            <span>Controle de Vendas</span>
+        </div>
+        <ul class="nav-links">
+            <li>
+                <a href="dashboard.html">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="produtos.html">
+                    <i class="fas fa-box"></i>
+                    <span>Produtos</span>
+                </a>
+            </li>
+            <li>
+                <a href="vendas.html">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Vendas</span>
+                </a>
+            </li>
+            <li>
+                <a href="gastos.html">
+                    <i class="fas fa-receipt"></i>
+                    <span>Gastos</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="resumo.html">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Resumo</span>
+                </a>
+            </li>
+            <li>
+                <a href="orcamento.html">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    <span>Orçamento</span>
+                </a>
+            </li>
+            <li>
+                <a href="agendamento.html">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Agendamento</span>
+                </a>
+            </li>
+        </ul>
+        <div class="sidebar-footer">
+            <button id="exportData" class="btn-secondary">
+                <i class="fas fa-download"></i>
+                <span>Exportar Dados</span>
+            </button>
+            <button id="importData" class="btn-secondary">
+                <i class="fas fa-upload"></i>
+                <span>Importar Dados</span>
+            </button>
+            <button id="logout" class="btn-danger">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Sair</span>
+            </button>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <header class="top-bar">
+            <button id="sidebarToggle" class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="user-info">
+                <span id="username"></span>
+                <i class="fas fa-user-circle"></i>
+            </div>
+        </header>
+
+        <div class="content">
+            <div class="content-header">
+                <h1>Resumo Financeiro</h1>
+                <div class="period-selector">
+                    <label for="period">Período:</label>
+                    <select id="period">
+                        <option value="7">Últimos 7 dias</option>
+                        <option value="30" selected>Últimos 30 dias</option>
+                        <option value="90">Últimos 90 dias</option>
+                        <option value="180">Últimos 180 dias</option>
+                        <option value="365">Último ano</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <div class="card-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Total em Vendas</h3>
+                        <p id="totalVendas">R$ 0,00</p>
+                    </div>
+                </div>
+
+                <div class="summary-card">
+                    <div class="card-icon">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Custo dos Produtos</h3>
+                        <p id="custoProdutos">R$ 0,00</p>
+                    </div>
+                </div>
+
+                <div class="summary-card">
+                    <div class="card-icon">
+                        <i class="fas fa-receipt"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Gastos Extras</h3>
+                        <p id="gastosExtras">R$ 0,00</p>
+                    </div>
+                </div>
+
+                <div class="summary-card">
+                    <div class="card-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Lucro Líquido</h3>
+                        <p id="lucroLiquido">R$ 0,00</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="export-section card">
+                <h3>Exportar Dados</h3>
+                <div class="export-controls">
+                    <div class="period-selector">
+                        <select id="exportPeriod" class="form-control">
+                            <option value="custom">Período Personalizado</option>
+                            <option value="day">Hoje</option>
+                            <option value="week">Última Semana</option>
+                            <option value="month">Mês Atual</option>
+                        </select>
+                    </div>
+                    
+                    <div id="customDateRange" class="date-range">
+                        <div class="form-group">
+                            <label for="startDate">Data Inicial:</label>
+                            <input type="date" id="startDate" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="endDate">Data Final:</label>
+                            <input type="date" id="endDate" class="form-control">
+                        </div>
+                    </div>
+                    
+                    <div class="export-buttons">
+                        <button onclick="exportData('json')" class="btn-primary">
+                            <i class="fas fa-file-code"></i>
+                            Exportar JSON
+                        </button>
+                        <button onclick="exportData('pdf')" class="btn-primary">
+                            <i class="fas fa-file-pdf"></i>
+                            Exportar PDF
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="charts-grid">
+                <div class="chart-container">
+                    <h2>Vendas vs. Gastos</h2>
+                    <canvas id="vendasGastosChart"></canvas>
+                </div>
+
+                <div class="chart-container">
+                    <h2>Produtos Mais Vendidos</h2>
+                    <canvas id="produtosChart"></canvas>
+                </div>
+
+                <div class="chart-container">
+                    <h2>Distribuição de Gastos</h2>
+                    <canvas id="gastosChart"></canvas>
+                </div>
+
+                <div class="chart-container">
+                    <h2>Evolução do Lucro</h2>
+                    <canvas id="lucroChart"></canvas>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <h2>Detalhamento por Produto</h2>
+                <div class="table-responsive">
+                    <table id="produtosTable">
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Qtd. Vendida</th>
+                                <th>Total Vendido</th>
+                                <th>Custo Total</th>
+                                <th>Lucro</th>
+                                <th>Margem</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Preenchido via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <input type="file" id="importInput" style="display: none" accept=".json">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="scripts/utils.js"></script>
+    <script src="scripts/auth.js"></script>
+    <script src="scripts/export.js"></script>
+    <script src="scripts/resumo.js"></script>
+</body>
+</html> 
